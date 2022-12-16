@@ -11,3 +11,17 @@ Project.belongsTo(User, {
 });
 
 module.exports = { User, Project };
+
+articleSchema.pre('validate', function(next) {
+  if (this.title) {
+    this.slug = slugify(this.title, { lower: true, strict: true })
+  }
+
+  if (this.markdown) {
+    this.sanitizedHtml = dompurify.sanitize(marked(this.markdown))
+  }
+
+  next()
+})
+
+module.exports = mongoose.model('Article', articleSchema)
